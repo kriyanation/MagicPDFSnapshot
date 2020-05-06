@@ -10,12 +10,13 @@ class MagicLessonList(Toplevel):
         self.parent = parent
 
         s = ttk.Style(self)
+        s.theme_use("clam")
         s.configure('Red.TLabelframe', background=bg)
         s.configure('Red.TLabelframe.Label', font=('courier', 14, 'bold', 'italic'))
         s.configure('Red.TLabelframe.Label', foreground=fg)
         s.configure('Red.TLabelframe.Label', background=bg)
         s.configure('Blue.TButton', background=buttonbg, foreground=buttonfg)
-        s.map('Blue.TButton', background=[('active', '!disabled', 'peru'), ('pressed', buttonbg)],
+        s.map('Blue.TButton', background=[('pressed', buttonbg),('active', '!disabled', "orange")],
               foreground=[('pressed', buttonfg), ('active', buttonfg)])
         s.configure('TScrollbar', background=buttonbg, foreground=buttonfg)
         self.configure(background=bg)

@@ -22,7 +22,7 @@ class SnapshotView(tk.Frame):
         self.view_flag = 0
         if lesson_id =="" or lesson_id is None:
             app = LessonList.MagicLessonList(bg='beige', fg='firebrick', buttonbg='firebrick', selectmode=tk.SINGLE,
-                                         buttonfg='snow', parent=self)
+                                         buttonfg='beige', parent=self)
 
             self.wait_window(app)
             print(self.selected_lessons)
