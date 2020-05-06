@@ -1,8 +1,12 @@
 import configparser
 import os,LessonList
+import subprocess
+import sys
 import tkinter as tk
+import traceback
 from tkinter import messagebox
 from reportlab.pdfgen import canvas
+from PIL import Image
 
 import Data_Capture
 
@@ -12,27 +16,42 @@ file_root = config.get("section1", "file_root")
 db = file_root+os.path.sep+'MagicRoom.db'
 
 class SnapshotView(tk.Frame):
-    def __init__(self,parent,*args,**kwargs):
+    def __init__(self,parent,lesson_id="",filename="",*args,**kwargs):
         super().__init__(parent,*args,**kwargs)
         self.file_root = file_root
         Data_Capture.db=db
-        app = LessonList.MagicLessonList(bg='beige', fg='firebrick', buttonbg='firebrick', selectmode=tk.SINGLE,
+        self.lesson_id = lesson_id
+        self.view_flag = 0
+        if lesson_id =="" or lesson_id is None:
+            app = LessonList.MagicLessonList(bg='beige', fg='firebrick', buttonbg='firebrick', selectmode=tk.SINGLE,
                                          buttonfg='snow', parent=self)
 
-        self.wait_window(app)
-        print(self.selected_lessons)
-        self.lesson_id = int(self.selected_lessons[0:self.selected_lessons.index(':') - 1].strip())
+            self.wait_window(app)
+            print(self.selected_lessons)
+            self.lesson_id = int(self.selected_lessons[0:self.selected_lessons.index(':') - 1].strip())
+            self.view_flag=1
 
+            filename = self.file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(self.lesson_id)+os.path.sep+"notes_"+str(self.lesson_id)+".pdf"
         self.lesson_data_dictionary = Data_Capture.get_Lesson_Dictionary(file_root,self.lesson_id)
         self.lesson_root =  self.file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(
             self.lesson_data_dictionary.get("Lesson_ID"))
-        self.notes_file = canvas.Canvas(str(self.lesson_data_dictionary.get("Lesson_ID")) + ".pdf")
+        self.notes_file = canvas.Canvas(filename)
         self.notes_file.setTitle("Learning Room Lesson Notes "+str(self.lesson_data_dictionary.get("Lesson_ID")))
         self.create_title_notes()
         self.create_factual_notes()
         self.create_application_notes()
         self.create_assessment_notes()
         self.create_canvas_image()
+        if self.view_flag == 1:
+            try:
+                if sys.platform == "win32":
+                    os.startfile(filename)
+                else:
+                    opener = "open" if sys.platform == "darwin" else "xdg-open"
+                    subprocess.call([opener, filename])
+            except:
+                messagebox.showerror("File open Error",
+                                     "File could not be opened. Check if you have Adobe Reader Installed or if the folder has full permissions")
 
     def create_title_notes(self):
       self.Title_Font = self.notes_file.setFont("Helvetica", 16)
@@ -88,10 +107,21 @@ class SnapshotView(tk.Frame):
         application_text_object.setFont("Helvetica-Bold", 12)
         application_text_object.textLine(str(i+1)+". "+self.lesson_data_dictionary.get("Application_Step_Description_" + str(i + 1)))
         self.notes_file.drawText(application_text_object)
-        self.notes_file.drawImage(self.lesson_root+os.path.sep+"images"+os.path.sep+ self.lesson_data_dictionary.get("Application_Steps_Widget_" + str(i + 1)),
+        if ( self.lesson_data_dictionary.get("Application_Steps_Widget_" + str(i + 1)) is not None):
+               try:
+                     self.notes_file.drawImage(self.lesson_root+os.path.sep+"images"+os.path.sep+ self.lesson_data_dictionary.get("Application_Steps_Widget_" + str(i + 1)),
                                   width=50, height=50,
                                   x=application_text_object.getX() + 50, y=application_text_object.getY() -40)
+               except:
+                   traceback.print_exc()
         i += 1
+      link_text_object = self.notes_file.beginText()
+      link_text_object.setTextOrigin(100,100)
+      link_text_object.setHorizScale(70)
+      link_text_object.setFont("Helvetica-Bold", 12)
+      link_text_object.textLine(self.lesson_data_dictionary.get("Apply_External_Link"))
+      print(self.lesson_data_dictionary.get("Apply_External_Link"))
+      self.notes_file.drawText(link_text_object)
       self.notes_file.showPage()
 
     def create_assessment_notes(self):
@@ -110,11 +140,18 @@ class SnapshotView(tk.Frame):
     def create_canvas_image(self):
         self.notes_file.setFont("Helvetica", 16)
         self.notes_file.drawCentredString(300, 820, "Skill Board")
-        self.notes_file.drawImage(
-            self.lesson_root+os.path.sep+"images"+os.path.sep+"skill_board"+str(self.lesson_data_dictionary.get("Lesson_ID"))+".png" ,
-            width=50, height=50,
-            x=250,y =720)
-        self.notes_file.showPage()
+        list_files = os.listdir(self.lesson_root+os.path.sep+"saved_boards")
+        file_index = 1
+        for file in list_files:
+            imageobject =Image.open( self.lesson_root+os.path.sep+"saved_boards"+os.path.sep+file)
+            imageobject.resize((500,500),Image.ANTIALIAS)
+            imageobject.save(self.lesson_root+os.path.sep+"saved_boards"+os.path.sep+file)
+            self.notes_file.drawImage(
+            self.lesson_root+os.path.sep+"saved_boards"+os.path.sep+file,
+            width=500, height=500,
+            x=50,y =150)
+            file_index += 1
+            self.notes_file.showPage()
         self.notes_file.save()
 
 if __name__ == "__main__":
