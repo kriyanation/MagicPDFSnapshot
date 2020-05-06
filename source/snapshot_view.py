@@ -10,10 +10,8 @@ from PIL import Image
 
 import Data_Capture
 
-config = configparser.RawConfigParser()
-config.read("../../magic.cfg")
-file_root = config.get("section1", "file_root")
-db = file_root+os.path.sep+'MagicRoom.db'
+file_root = os.path.abspath(os.path.join(os.getcwd(), ".."))
+db = file_root + os.path.sep + "MagicRoom.db"
 
 class SnapshotView(tk.Frame):
     def __init__(self,parent,lesson_id="",filename="",*args,**kwargs):
