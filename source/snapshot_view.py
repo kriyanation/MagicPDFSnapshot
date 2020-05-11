@@ -1,5 +1,5 @@
-import configparser
-import os,LessonList
+
+import os,lesson_list_PDF_notes
 import subprocess
 import sys
 import tkinter as tk
@@ -8,20 +8,21 @@ from tkinter import messagebox
 from reportlab.pdfgen import canvas
 from PIL import Image
 
-import Data_Capture
+import data_capture_notes
 
 file_root = os.path.abspath(os.path.join(os.getcwd(), ".."))
 db = file_root + os.path.sep + "MagicRoom.db"
 
-class SnapshotView(tk.Frame):
+class SnapshotView(tk.Toplevel):
     def __init__(self,parent,lesson_id="",filename="",*args,**kwargs):
         super().__init__(parent,*args,**kwargs)
+        self.configure(background="gray16")
         self.file_root = file_root
-        Data_Capture.db=db
+        data_capture_notes.db=db
         self.lesson_id = lesson_id
         self.view_flag = 0
         if lesson_id =="" or lesson_id is None:
-            app = LessonList.MagicLessonList(bg='beige', fg='firebrick', buttonbg='firebrick', selectmode=tk.SINGLE,
+            app = lesson_list_PDF_notes.MagicLessonList(bg='beige', fg='firebrick', buttonbg='firebrick', selectmode=tk.SINGLE,
                                          buttonfg='beige', parent=self)
 
             self.wait_window(app)
@@ -30,7 +31,7 @@ class SnapshotView(tk.Frame):
             self.view_flag=1
 
             filename = self.file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(self.lesson_id)+os.path.sep+"notes_"+str(self.lesson_id)+".pdf"
-        self.lesson_data_dictionary = Data_Capture.get_Lesson_Dictionary(file_root,self.lesson_id)
+        self.lesson_data_dictionary = data_capture_notes.get_Lesson_Dictionary(file_root, self.lesson_id)
         self.lesson_root =  self.file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(
             self.lesson_data_dictionary.get("Lesson_ID"))
         self.notes_file = canvas.Canvas(filename)
@@ -112,6 +113,7 @@ class SnapshotView(tk.Frame):
                                   x=application_text_object.getX() + 50, y=application_text_object.getY() -40)
                except:
                    traceback.print_exc()
+
         i += 1
       link_text_object = self.notes_file.beginText()
       link_text_object.setTextOrigin(100,100)
@@ -152,13 +154,13 @@ class SnapshotView(tk.Frame):
             self.notes_file.showPage()
         self.notes_file.save()
 
-if __name__ == "__main__":
-    dashboard_app = tk.Tk()
-    dashboard_app.configure(background="gray25")
-    dashboard_app.title("Learning Room Assessment")
-    dashboard_app.geometry("800x800")
-    frame = SnapshotView(dashboard_app)
-    # dashboard_app.rowconfigure(0,weight=1)
-    dashboard_app.columnconfigure(0, weight=1)
-    frame.grid(row=0, column=0)
-    dashboard_app.mainloop()
+#if __name__ == "__main__":
+    # dashboard_app = tk.Tk()
+    # dashboard_app.configure(background="gray25")
+    # dashboard_app.title("Learning Room Assessment")
+    # dashboard_app.geometry("800x800")
+    # frame = SnapshotView(dashboard_app)
+    # # dashboard_app.rowconfigure(0,weight=1)
+    # dashboard_app.columnconfigure(0, weight=1)
+    # frame.grid(row=0, column=0)
+    # dashboard_app.mainloop()
