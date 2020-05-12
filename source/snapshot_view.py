@@ -1,4 +1,4 @@
-
+import logging
 import os,lesson_list_PDF_notes
 import subprocess
 import sys
@@ -10,6 +10,7 @@ from PIL import Image
 
 import data_capture_notes
 
+logger = logging.getLogger("MagicLogger")
 file_root = os.path.abspath(os.path.join(os.getcwd(), ".."))
 db = file_root + os.path.sep + "MagicRoom.db"
 
@@ -106,13 +107,14 @@ class SnapshotView(tk.Toplevel):
         application_text_object.setFont("Helvetica-Bold", 12)
         application_text_object.textLine(str(i+1)+". "+self.lesson_data_dictionary.get("Application_Step_Description_" + str(i + 1)))
         self.notes_file.drawText(application_text_object)
-        if ( self.lesson_data_dictionary.get("Application_Steps_Widget_" + str(i + 1)) is not None):
+        image_name = self.lesson_data_dictionary.get("Application_Steps_Widget_" + str(i + 1))
+        if ( image_name is not None and image_name.strip() != ""):
                try:
                      self.notes_file.drawImage(self.lesson_root+os.path.sep+"images"+os.path.sep+ self.lesson_data_dictionary.get("Application_Steps_Widget_" + str(i + 1)),
                                   width=50, height=50,
                                   x=application_text_object.getX() + 50, y=application_text_object.getY() -40)
                except:
-                   traceback.print_exc()
+                   logger.error(traceback.print_exc())
 
         i += 1
       link_text_object = self.notes_file.beginText()
