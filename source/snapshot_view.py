@@ -52,7 +52,7 @@ class SnapshotView(tk.Toplevel):
             except:
                 messagebox.showerror("File open Error",
                                      "File could not be opened. Check if you have Adobe Reader Installed or if the folder has full permissions")
-
+        self.destroy()
     def create_title_notes(self):
       self.Title_Font = self.notes_file.setFont("Helvetica", 16)
       self.notes_file.drawCentredString(300, 820, self.lesson_data_dictionary.get("Lesson_Title"))
