@@ -4,7 +4,7 @@ import subprocess
 import sys
 import tkinter as tk
 import traceback
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 from reportlab.pdfgen import canvas
 from PIL import Image
 
@@ -17,6 +17,8 @@ db = file_root + os.path.sep + "MagicRoom.db"
 class SnapshotView(tk.Toplevel):
     def __init__(self,parent,lesson_id="",filename="",*args,**kwargs):
         super().__init__(parent,*args,**kwargs)
+        s = ttk.Style(self)
+        s.theme_use("clam")
         self.configure(background="gray16")
         self.file_root = file_root
         data_capture_notes.db=db
