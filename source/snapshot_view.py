@@ -7,6 +7,7 @@ import traceback
 from tkinter import messagebox, ttk
 from reportlab.pdfgen import canvas
 from PIL import Image
+from textwrap import wrap
 
 import data_capture_notes
 
@@ -136,7 +137,8 @@ class SnapshotView(tk.Toplevel):
         assessment_text_object.setTextOrigin(50, 750)
         assessment_text_object.setHorizScale(90)
         assessment_text_object.setFont("Helvetica", 12)
-        assessment_text_object.textLines(assessment_text)
+        wraped_text = "\n".join(wrap(assessment_text, 80))
+        assessment_text_object.textLines(wraped_text)
         self.notes_file.drawText(assessment_text_object)
         self.notes_file.showPage()
 
