@@ -137,7 +137,7 @@ class SnapshotView(tk.Toplevel):
         assessment_text_object.setTextOrigin(50, 750)
         assessment_text_object.setHorizScale(90)
         assessment_text_object.setFont("Helvetica", 12)
-        wraped_text = "\n".join(wrap(assessment_text, 80))
+        wraped_text = "\n".join(wrap(assessment_text, 80,replace_whitespace=False))
         assessment_text_object.textLines(wraped_text)
         self.notes_file.drawText(assessment_text_object)
         self.notes_file.showPage()
