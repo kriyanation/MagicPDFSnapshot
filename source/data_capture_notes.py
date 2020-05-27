@@ -2,7 +2,8 @@ import os
 import sqlite3
 import sys
 from tkinter import messagebox
-db=""
+file_root = os.path.abspath(os.path.join(os.getcwd(), ".."))
+db = file_root + os.path.sep + "MagicRoom.db"
 def get_Lessons():
     print (db)
     connection = sqlite3.connect(db)
