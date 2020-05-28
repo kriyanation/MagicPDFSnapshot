@@ -75,14 +75,14 @@ class SnapshotView(tk.Toplevel):
                 self.audio_play_button = ttk.Button(self.notes_labelframe, text="Play",
                                                     command=lambda: self.play_notes_audio(self.lesson_id),
                                                     style="Blue.TButton")
-                self.audio_play_label.grid(row=2, column=0)
+                self.audio_play_label.grid(padx=5,row=2, column=0,sticky=tk.W)
                 self.audio_play_button.grid(row=2, column=1)
 
-            self.notes_PDF_label.grid(row=0, column=0,padx=5,pady=5)
+            self.notes_PDF_label.grid(row=0, column=0,padx=5,pady=5,sticky=tk.W)
             self.notes_PDF_Button.grid(row=0, column=1,padx=5,pady=5)
             self.save_file_button.grid(row=0, column=2,padx=5,pady=5)
 
-            self.notes_audio_label.grid(row=1, column=0, padx=5, pady=5)
+            self.notes_audio_label.grid(row=1, column=0, padx=5, pady=5,sticky=tk.W)
             self.notes_audio_Button.grid(row=1, column=1, padx=5, pady=5)
             self.save_audio_button.grid(row=1, column=2, padx=5, pady=5)
 
