@@ -6,12 +6,13 @@ import sys
 import tkinter as tk
 import traceback
 from tkinter import messagebox, ttk, filedialog
-
+import threading
 from gtts import gTTS
 from reportlab.pdfgen import canvas
 from PIL import Image
 from textwrap import wrap
 
+import PDF_Utils
 import data_capture_notes
 
 logger = logging.getLogger("MagicLogger")
@@ -88,6 +89,11 @@ class SnapshotView(tk.Toplevel):
 
             self.notes_labelframe.grid(row=0,column=0,padx=5,pady=5)
             self.notes_condition_label.grid(row=2,column=0)
+            pdf_data = PDF_Utils.PDFUtils(self.lesson_id,filename)
+
+
+            self.lesson_text_full = pdf_data.lesson_text_full
+
 
 
     def display_PDF(self,notes_file):
@@ -118,22 +124,29 @@ class SnapshotView(tk.Toplevel):
             print(traceback.print_exc())
 
     def generate_notes_audio(self,lesson_id):
-        try:
-             audio_object = gTTS(text=self.lesson_text_full,lang="en",slow=False)
-             filepath = file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(lesson_id) + os.path.sep + "notes_" + str(lesson_id) + ".mp3"
-             print(filepath)
-             audio_object.save(filepath)
-        except:
-            messagebox.showerror("Audio File Error", "Could not generate the audio file")
-            print("could not generate the audio file")
-            logger.exception("Could not generate the audio file")
-
+        audio_generate = threading.Thread(target=self.generate_audio, args=(lesson_id,))
+        audio_generate.start()
+        messagebox.showinfo("Staus", "Online audio generation triggered.\n Player will start once generation is complete")
+        audio_generate.join(20)
         if sys.platform == "win32":
             os.startfile(file_root+os.path.sep+"Lessons"+os.path.sep+"Lesson"+str(lesson_id)+os.path.sep+"audio_notes_"+str(lesson_id)+".mp3")
         else:
             opener = "open" if sys.platform == "darwin" else "xdg-open"
             subprocess.call([opener, file_root+os.path.sep+"Lessons"+os.path.sep+"Lesson"+str(lesson_id)+os.path.sep+"audio_notes_"+str(lesson_id)+".mp3"
         ])
+
+    def generate_audio(self, lesson_id):
+        try:
+
+            audio_object = gTTS(text=self.lesson_text_full, lang="en", slow=False)
+            filepath = file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(
+                lesson_id) + os.path.sep + "audio_notes_" + str(lesson_id) + ".mp3"
+            print(filepath)
+            audio_object.save(filepath)
+        except:
+            messagebox.showerror("Audio File Error", "Could not generate the audio file")
+            print("could not generate the audio file")
+            logger.exception("Could not generate the audio file")
 
     def play_notes_audio(self, lesson_id):
 
