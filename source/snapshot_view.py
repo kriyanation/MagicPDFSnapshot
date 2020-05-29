@@ -37,7 +37,7 @@ class SnapshotView(tk.Toplevel):
         self.view_flag = 0
         if lesson_id =="" or lesson_id is None:
             app = lesson_list_PDF_notes.MagicLessonList(parent=self)
-            app.geometry("390x700+50+50")
+            app.geometry("340x700+50+50")
             self.wait_window(app)
             print(self.selected_lessons)
             self.lesson_id = self.selected_lessons[0]
