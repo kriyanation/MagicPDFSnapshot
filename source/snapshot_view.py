@@ -64,7 +64,7 @@ class SnapshotView(tk.Toplevel):
             self.notes_audio_Button = ttk.Button(self.notes_labelframe, text="Generate",
                                                command=lambda: self.generate_notes_audio(self.lesson_id), style="Blue.TButton")
             filename_audio = self.file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(
-                self.lesson_id) + os.path.sep + "notes_" + str(self.lesson_id) + ".mp3"
+                self.lesson_id) + os.path.sep + "audio_notes_" + str(self.lesson_id) + ".mp3"
             self.save_audio_button = ttk.Button(self.notes_labelframe, text="Save",
                                                command=lambda: self.save_notes_audio(filename_audio,
                                                                                     self.lesson_id),
@@ -109,16 +109,18 @@ class SnapshotView(tk.Toplevel):
 
     def save_notes_file(self, notes_file, lesson_id):
         try:
-            filename = filedialog.askdirectory()
+            filename = filedialog.askdirectory(parent=self)
             shutil.copyfile(notes_file, filename + os.path.sep + "notes" + str(lesson_id) + ".pdf")
+            messagebox.showinfo("Copy Message", "File Copied",parent=self)
         except:
             messagebox.showwarning("File Save Error", "File could not be copied", parent=self)
             print(traceback.print_exc())
 
     def save_notes_audio(self, notes_audio_file, lesson_id):
         try:
-            filename = filedialog.askdirectory()
-            shutil.copyfile(notes_audio_file, filename + os.path.sep + "notes" + str(lesson_id) + ".mp3")
+            filename = filedialog.askdirectory(parent=self)
+            shutil.copyfile(notes_audio_file, filename + os.path.sep + "audio_notes" + str(lesson_id) + ".mp3")
+            messagebox.showinfo("Copy Message", "File Copied",parent=self)
         except:
             messagebox.showwarning("File Save Error", "File could not be copied", parent=self)
             print(traceback.print_exc())
@@ -126,7 +128,7 @@ class SnapshotView(tk.Toplevel):
     def generate_notes_audio(self,lesson_id):
         audio_generate = threading.Thread(target=self.generate_audio, args=(lesson_id,))
         audio_generate.start()
-        messagebox.showinfo("Staus", "Online audio generation triggered.\n Player will start once generation is complete")
+        messagebox.showinfo("Staus", "Online audio generation triggered.\n Player will start once generation is complete",parent=self)
         audio_generate.join(20)
         if sys.platform == "win32":
             os.startfile(file_root+os.path.sep+"Lessons"+os.path.sep+"Lesson"+str(lesson_id)+os.path.sep+"audio_notes_"+str(lesson_id)+".mp3")
@@ -144,20 +146,26 @@ class SnapshotView(tk.Toplevel):
             print(filepath)
             audio_object.save(filepath)
         except:
-            messagebox.showerror("Audio File Error", "Could not generate the audio file")
+            messagebox.showerror("Audio File Error", "Could not generate the audio file",parent=self)
             print("could not generate the audio file")
             logger.exception("Could not generate the audio file")
 
     def play_notes_audio(self, lesson_id):
 
-        if sys.platform == "win32":
-            os.startfile(file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(
-                lesson_id) + os.path.sep + "notes_" + str(lesson_id) + ".mp3")
-        else:
-            opener = "open" if sys.platform == "darwin" else "xdg-open"
-            subprocess.call([opener, file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(
-                lesson_id) + os.path.sep + "notes_" + str(lesson_id) + ".mp3"
-                             ])
+        try:
+
+            if sys.platform == "win32":
+                os.startfile(file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(
+                    lesson_id) + os.path.sep + "audio_notes_" + str(lesson_id) + ".mp3")
+            else:
+                opener = "open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, file_root + os.path.sep + "Lessons" + os.path.sep + "Lesson" + str(
+                    lesson_id) + os.path.sep + "audio_notes_" + str(lesson_id) + ".mp3"
+                                 ])
+        except:
+            messagebox.showerror("Play Error", "Could not play the audio file",parent=self)
+            print("could not play the audio file")
+            logger.exception("Could not play the audio file")
 
 
 #if __name__ == "__main__":

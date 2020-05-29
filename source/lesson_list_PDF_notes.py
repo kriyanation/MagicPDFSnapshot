@@ -28,7 +28,7 @@ class MagicLessonList(Toplevel):
                                       font=("helvetica", 12, 'bold'), background="gray27", foreground="white")
         self.scroll_frame = ttk.Frame(self)
         self.choice_list = tk.Listbox(self.scroll_frame, selectmode=tk.SINGLE, background="white", width=40, height=30,
-                                      selectbackground='royalblue4', selectforeground='white', foreground="gray27",
+                                      selectbackground='royalblue4', selectforeground='white', foreground="royalblue4",
                                       bd=0, font=("helvetica", 12, 'bold'))
         self.lesson_button = ttk.Button(self, text="Select Lesson",
                                         style='Blue.TButton', command=self.select_lesson)
