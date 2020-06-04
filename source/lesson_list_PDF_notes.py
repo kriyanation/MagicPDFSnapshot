@@ -11,24 +11,24 @@ class MagicLessonList(Toplevel):
 
         s = ttk.Style(self)
         s.theme_use('clam')
-        s.configure('Red.TLabelframe', background="gray27")
+        s.configure('Red.TLabelframe', background="gray22")
         s.configure('Red.TLabelframe.Label', font=('helvetica', 14, 'bold'))
         s.configure('Red.TLabelframe.Label', foreground="white")
-        s.configure('Red.TLabelframe.Label', background="gray27")
+        s.configure('Red.TLabelframe.Label', background="gray22")
         s.configure('Blue.TButton', background="steelblue", foreground="white")
         s.map('Blue.TButton', background=[('active', '!disabled', 'dark turquoise'), ('pressed', 'steelblue')],
               foreground=[('pressed', "white"), ('active', "white")])
-        s.configure('TScrollbar', background="gray27", foreground="gray33")
-        s.map('TScrollbar', background=[('active', '!disabled', 'gray33'), ('pressed', 'gray27')],
+        s.configure('TScrollbar', background="gray22", foreground="gray33")
+        s.map('TScrollbar', background=[('active', '!disabled', 'gray33'), ('pressed', 'gray22')],
               foreground=[('pressed', "gray33"), ('active', "gray33")])
-        self.configure(background="gray25")
+        self.configure(background="gray20")
         self.grab_set()
 
         self.choice_label = ttk.Label(self, text="Select the Lesson to Learn",
-                                      font=("helvetica", 12, 'bold'), background="gray27", foreground="white")
+                                      font=("helvetica", 12, 'bold'), background="gray22", foreground="white")
         self.scroll_frame = ttk.Frame(self)
         self.choice_list = tk.Listbox(self.scroll_frame, selectmode=tk.SINGLE, background="white", width=40, height=30,
-                                      selectbackground='royalblue4', selectforeground='white', foreground="gray27",
+                                      selectbackground='royalblue4', selectforeground='white', foreground="royalblue4",
                                       bd=0, font=("helvetica", 10, 'bold'))
         self.lesson_button = ttk.Button(self, text="Select Lesson",
                                         style='Blue.TButton', command=self.select_lesson)

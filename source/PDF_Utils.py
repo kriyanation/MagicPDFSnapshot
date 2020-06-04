@@ -38,24 +38,35 @@ class PDFUtils():
         return filename_img_title_full, filename_img_title
 
     def create_title_notes(self):
-          self.Title_Font = self.notes_file.setFont("Helvetica", 16)
-          self.notes_file.drawCentredString(300, 820, self.lesson_data_dictionary.get("Lesson_Title"))
-          self.Text_Font = self.notes_file.setFont("Helvetica", 12)
-          self.title_text_object = self.notes_file.beginText()
-          self.title_text_object.setTextOrigin(50,800)
-          self.title_text_object.setHorizScale(90)
-          title_Text = self.lesson_data_dictionary.get("Title_Running_Notes")
-          self.lesson_text_full += "Introduction.\n"+title_Text+".\n"
-          wraped_Text = "\n".join(wrap(title_Text, 60, replace_whitespace=False))
-          self.title_text_object.textLines(wraped_Text)
-          self.notes_file.drawText(self.title_text_object)
-          self.notes_file.drawImage(self.lesson_root+os.path.sep+"images"+os.path.sep+self.lesson_data_dictionary.get("Title_Image"),width=300,height=300,x=150,y = self.title_text_object.getY()-300)
+        
+              self.Title_Font = self.notes_file.setFont("Helvetica", 16)
+              self.notes_file.drawCentredString(300, 820, self.lesson_data_dictionary.get("Lesson_Title"))
+              self.notes_file.setFont("Helvetica", 8)
+              self.notes_file.setFillColorRGB(0,0,1) 
+              self.notes_file.drawCentredString(300,810,"http://www.wondersky.in")
+              self.notes_file.setFillColorRGB(0,0,0) 
+              link_width = self.notes_file.stringWidth("http://www.wondersky.in")
+              link_rect = (220,810,290,795)
+              self.notes_file.linkURL("http://www.wondersky.in", link_rect)
+              self.Text_Font = self.notes_file.setFont("Helvetica", 12)
+              self.title_text_object = self.notes_file.beginText()
+              self.title_text_object.setTextOrigin(50,800)
+              self.title_text_object.setHorizScale(90)
+              title_Text = self.lesson_data_dictionary.get("Title_Running_Notes")
+              self.lesson_text_full += "Introduction.\n"+title_Text+".\n"
+              wraped_Text = "\n".join(wrap(title_Text, 60, replace_whitespace=False))
+              self.title_text_object.textLines(wraped_Text)
+              self.notes_file.drawText(self.title_text_object)
+              try:
+                 self.notes_file.drawImage(self.lesson_root+os.path.sep+"images"+os.path.sep+self.lesson_data_dictionary.get("Title_Image"),width=300,height=300,x=150,y = self.title_text_object.getY()-300)
 
+              except:
+                 logger.exception("Image Most likely empty or invalid - Title")
+              self.notes_file.drawCentredString(300, 800-300-self.title_text_object.getX()-50-150-50,"Video File Used : "+
+                                                self.lesson_data_dictionary.get("Title_Video"))
 
-          self.notes_file.drawCentredString(300, 800-300-self.title_text_object.getX()-50-150-50,"Video File Used : "+
-                                            self.lesson_data_dictionary.get("Title_Video"))
-
-          self.notes_file.showPage()
+              self.notes_file.showPage()
+       
 
 
 
@@ -77,10 +88,12 @@ class PDFUtils():
         wraped_text = "\n".join(wrap(factual_text, 60, replace_whitespace=False))
         factual_text_object.textLines(wraped_text)
         self.notes_file.drawText(factual_text_object)
-
-        self.notes_file.drawImage(self.lesson_root+os.path.sep+"images"+os.path.sep + self.lesson_data_dictionary.get("Factual_Image"+str(i+1)),
+        try:
+            self.notes_file.drawImage(self.lesson_root+os.path.sep+"images"+os.path.sep + self.lesson_data_dictionary.get("Factual_Image"+str(i+1)),
                                   width=200, height=200,
                                   x=factual_text_object.getX()+150, y=factual_text_object.getY()-100)
+        except:
+             logger.exception("Image Most likely empty or invalid - Factual")
         i +=1
 
       self.notes_file.showPage()
@@ -110,7 +123,7 @@ class PDFUtils():
                                   width=50, height=50,
                                   x=application_text_object.getX() + 50, y=application_text_object.getY() -40)
                except:
-                   logger.error(traceback.print_exc())
+                   logger.exception("Application Image Empty")
 
         i += 1
       link_text_object = self.notes_file.beginText()
@@ -145,10 +158,13 @@ class PDFUtils():
             imageobject =Image.open( self.lesson_root+os.path.sep+"saved_boards"+os.path.sep+file)
             imageobject.resize((500,500),Image.ANTIALIAS)
             imageobject.save(self.lesson_root+os.path.sep+"saved_boards"+os.path.sep+file)
-            self.notes_file.drawImage(
-            self.lesson_root+os.path.sep+"saved_boards"+os.path.sep+file,
-            width=500, height=500,
-            x=50,y =150)
+            try:
+                self.notes_file.drawImage(
+                self.lesson_root+os.path.sep+"saved_boards"+os.path.sep+file,
+                width=500, height=500,
+                x=50,y =150)
+            except:
+                logger.exception("Invalid Board Image")
             file_index += 1
             self.notes_file.showPage()
         self.notes_file.save()

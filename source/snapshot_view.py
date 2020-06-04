@@ -27,11 +27,11 @@ class SnapshotView(tk.Toplevel):
         self.lesson_text_full = ""
         s.theme_use("clam")
 
-        s.configure('Notes.TLabelframe', background='gray27')
+        s.configure('Notes.TLabelframe', background='gray22')
         s.configure('Notes.TLabelframe.Label', font=('helvetica', 14, 'bold'))
-        s.configure('Notes.TLabelframe.Label', background='gray27', foreground='white')
+        s.configure('Notes.TLabelframe.Label', background='gray22', foreground='white')
 
-        self.configure(background="gray25")
+        self.configure(background="gray20")
         self.file_root = file_root
         self.lesson_id = lesson_id
         self.view_flag = 0
@@ -39,6 +39,8 @@ class SnapshotView(tk.Toplevel):
             app = lesson_list_PDF_notes.MagicLessonList(parent=self)
             app.geometry("340x700+50+50")
             self.wait_window(app)
+            if hasattr(self,"selected_lessons") is False:
+                self.destroy()
             print(self.selected_lessons)
             self.lesson_id = self.selected_lessons[0]
             self.view_flag=1
@@ -52,7 +54,7 @@ class SnapshotView(tk.Toplevel):
             self.notes_PDF_label = ttk.Label(self.notes_labelframe, text="View Notes",
                                                   style="Notes.TLabelframe.Label")
             self.notes_condition_label = ttk.Label(self, text="Audio notes generation requires internet connectivity"
-                                            ,background="gray27",foreground="aquamarine", font=("helvetica",10,"bold"))
+                                            ,background="gray22",foreground="aquamarine", font=("helvetica",10,"bold"))
             self.notes_PDF_Button = ttk.Button(self.notes_labelframe, text="View",
                                                     command=lambda: self.display_PDF(filename), style="Blue.TButton")
             self.save_file_button = ttk.Button(self.notes_labelframe, text="Save",
@@ -89,15 +91,21 @@ class SnapshotView(tk.Toplevel):
 
             self.notes_labelframe.grid(row=0,column=0,padx=5,pady=5)
             self.notes_condition_label.grid(row=2,column=0)
-            pdf_data = PDF_Utils.PDFUtils(self.lesson_id,filename)
+            try:
+                pdf_data = PDF_Utils.PDFUtils(self.lesson_id,filename)
+                self.lesson_text_full = pdf_data.lesson_text_full
+            except:
+                logger.exception("PDF Generation Error")
 
 
-            self.lesson_text_full = pdf_data.lesson_text_full
+            
 
 
 
     def display_PDF(self,notes_file):
+        
         try:
+            pdf_data = PDF_Utils.PDFUtils(self.lesson_id,notes_file)
             if sys.platform == "win32":
                 os.startfile(notes_file)
             else:
@@ -106,6 +114,7 @@ class SnapshotView(tk.Toplevel):
         except:
             messagebox.showerror("File open Error",
                                  "File could not be opened. Check if you have Adobe Reader Installed or if the folder has full permissions")
+            logger.exception("PDF Generation Error")
 
     def save_notes_file(self, notes_file, lesson_id):
         try:
@@ -114,7 +123,7 @@ class SnapshotView(tk.Toplevel):
             messagebox.showinfo("Copy Message", "File Copied",parent=self)
         except:
             messagebox.showwarning("File Save Error", "File could not be copied", parent=self)
-            print(traceback.print_exc())
+            logger.exception("Save Error")
 
     def save_notes_audio(self, notes_audio_file, lesson_id):
         try:
@@ -123,7 +132,7 @@ class SnapshotView(tk.Toplevel):
             messagebox.showinfo("Copy Message", "File Copied",parent=self)
         except:
             messagebox.showwarning("File Save Error", "File could not be copied", parent=self)
-            print(traceback.print_exc())
+            logger.exception("Save Audio Error")
 
     def generate_notes_audio(self,lesson_id):
         audio_generate = threading.Thread(target=self.generate_audio, args=(lesson_id,))
