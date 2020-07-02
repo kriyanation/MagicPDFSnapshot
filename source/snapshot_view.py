@@ -109,8 +109,7 @@ class SnapshotView(tk.Toplevel):
             if sys.platform == "win32":
                 os.startfile(notes_file)
             else:
-                opener = "open" if sys.platform == "darwin" else "xdg-open"
-                subprocess.call([opener, notes_file])
+               os.system("xpdf "+notes_file)
         except:
             messagebox.showerror("File open Error",
                                  "File could not be opened. Check if you have Adobe Reader Installed or if the folder has full permissions")
