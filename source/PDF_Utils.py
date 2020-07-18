@@ -54,7 +54,7 @@ class PDFUtils():
               self.title_text_object.setHorizScale(90)
               title_Text = self.lesson_data_dictionary.get("Title_Running_Notes")
               self.lesson_text_full += "Introduction.\n"+title_Text+".\n"
-              wraped_Text = "\n".join(wrap(title_Text, 60, replace_whitespace=False))
+              wraped_Text = " ".join(wrap(title_Text, 60, replace_whitespace=False))
               self.title_text_object.textLines(wraped_Text)
               self.notes_file.drawText(self.title_text_object)
               try:
@@ -85,7 +85,7 @@ class PDFUtils():
         factual_text_object.setFont("Helvetica", 12)
         factual_text = self.lesson_data_dictionary.get("Factual_Term"+str(i+1)+"_Description")
         self.lesson_text_full += term_text+"."+factual_text+"."
-        wraped_text = "\n".join(wrap(factual_text, 60, replace_whitespace=False))
+        wraped_text = "\n".join(wrap(factual_text, 30, replace_whitespace=False))
         factual_text_object.textLines(wraped_text)
         self.notes_file.drawText(factual_text_object)
         try:
@@ -105,7 +105,7 @@ class PDFUtils():
       self.notes_file.drawCentredString(300, 820, "Skill Building")
       number_of_steps = int(self.lesson_data_dictionary.get("Application_Steps_Number"))
       i=0
-      self.lesson_text_full += "Steps."
+      self.lesson_text_full += "Skill Building Steps."
       while i < number_of_steps:
         application_text_object = self.notes_file.beginText()
         application_text_object.setTextOrigin(100, (750 - i * 90))
@@ -113,7 +113,7 @@ class PDFUtils():
         application_text_object.setFont("Helvetica-Bold", 12)
         step_text = str(i+1)+". "+self.lesson_data_dictionary.get("Application_Step_Description_" + str(i + 1))
         self.lesson_text_full += step_text + "."
-        wraped_text = "\n".join(wrap(step_text, 60, replace_whitespace=False))
+        wraped_text = "\n".join(wrap(step_text, 50, replace_whitespace=False))
         application_text_object.textLines(wraped_text)
         self.notes_file.drawText(application_text_object)
         image_name = self.lesson_data_dictionary.get("Application_Steps_Widget_" + str(i + 1))
@@ -137,13 +137,14 @@ class PDFUtils():
 
     def create_assessment_notes(self):
         self.notes_file.setFont("Helvetica", 16)
+       
         self.notes_file.drawCentredString(300, 820, "Assessment")
         assessment_text = self.lesson_data_dictionary.get("IP_Questions")
         assessment_text_object = self.notes_file.beginText()
         assessment_text_object.setTextOrigin(50, 750)
-        assessment_text_object.setHorizScale(90)
+        assessment_text_object.setHorizScale(75)
         assessment_text_object.setFont("Helvetica", 12)
-        wraped_text = "\n".join(wrap(assessment_text, 80,replace_whitespace=False))
+        wraped_text = " ".join(wrap(assessment_text, 80,replace_whitespace=False))
         assessment_text_object.textLines(wraped_text)
         self.notes_file.drawText(assessment_text_object)
         self.notes_file.showPage()
