@@ -37,7 +37,7 @@ class SnapshotView(tk.Toplevel):
         self.view_flag = 0
         if lesson_id =="" or lesson_id is None:
             app = lesson_list_PDF_notes.MagicLessonList(parent=self)
-            app.geometry("340x700+50+50")
+            app.geometry("340x800+50+50")
             self.wait_window(app)
             if hasattr(self,"selected_lessons") is False:
                 self.destroy()
@@ -103,7 +103,10 @@ class SnapshotView(tk.Toplevel):
 
 
     def display_PDF(self,notes_file):
-        
+        messagebox.showinfo("File Opened",
+                            "File will be opened in another window.\n\nAdobe File Reader is required to view the file.",
+                            parent=self)
+
         try:
             pdf_data = PDF_Utils.PDFUtils(self.lesson_id,notes_file)
             if sys.platform == "win32":

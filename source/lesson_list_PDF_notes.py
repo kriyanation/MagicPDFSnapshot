@@ -11,15 +11,15 @@ class MagicLessonList(Toplevel):
 
         s = ttk.Style(self)
         s.theme_use('clam')
-        s.configure('Red.TLabelframe', background="gray22")
-        s.configure('Red.TLabelframe.Label', font=('helvetica', 14, 'bold'))
-        s.configure('Red.TLabelframe.Label', foreground="white")
-        s.configure('Red.TLabelframe.Label', background="gray22")
+        s.configure('NotesRed.TLabelframe', background="gray22")
+        s.configure('NotesRed.TLabelframe.Label', font=('helvetica', 14, 'bold'))
+        s.configure('NotesRed.TLabelframe.Label', foreground="white")
+        s.configure('NotesRed.TLabelframe.Label', background="gray22")
         s.configure('Blue.TButton', background="steelblue", foreground="white")
         s.map('Blue.TButton', background=[('active', '!disabled', 'dark turquoise'), ('pressed', 'steelblue')],
               foreground=[('pressed', "white"), ('active', "white")])
-        s.configure('TScrollbar', background="gray22", foreground="gray33")
-        s.map('TScrollbar', background=[('active', '!disabled', 'gray33'), ('pressed', 'gray22')],
+        s.configure('notes.Vertical.TScrollbar', background="gray22", foreground="gray33")
+        s.map('notes.Vertical.TScrollbar', background=[('active', '!disabled', 'gray33'), ('pressed', 'gray22')],
               foreground=[('pressed', "gray33"), ('active', "gray33")])
         self.configure(background="gray20")
         self.grab_set()
@@ -40,7 +40,7 @@ class MagicLessonList(Toplevel):
         self.scroll_frame.grid(row=1, column=0,sticky=tk.NSEW,padx=10)
         self.choice_list.grid(row=0, column=0, sticky=tk.NSEW)
        # self.lesson_button.grid(row=2, column=0, pady=5)
-        self.scrollbar = ttk.Scrollbar(self.scroll_frame, style='TScrollbar')
+        self.scrollbar = ttk.Scrollbar(self.scroll_frame, style='notes.Vertical.TScrollbar')
         self.choice_list.config(yscrollcommand=self.scrollbar.set)
         self.scrollbar.config(command=self.choice_list.yview)
         self.scrollbar.grid(row=0, column=1, sticky=tk.NSEW)
